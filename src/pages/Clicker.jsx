@@ -22,27 +22,44 @@ function usePersistentClicks(key = 'clicks') {
 
 export default function Clicker() {
   const { cps, registerClick: registerClickForCps } = useCpsTracker();
+
   const [clicks, setClicks] = usePersistentClicks();
   const increment = () => { 
     setClicks(c => c + 1);
     registerClickForCps();
   }
 
-  return (
-    <div className="h-screen bg-slate-800 text-white bg-center bg-cover flex flex-col justify-between items-center text-center py-80">
-      {/* Top */}
-      <h1 className="text-4xl font-bold mb-4">Clicker Page</h1>
+  const resetClicks = () => {
+    if (window.confirm('Are you sure you want to reset your clicks?')) {
+      setClicks(0);
+      localStorage.removeItem('clicks');
+    }
+  };
 
-      {/* Middle: Display + Button */}
-      <div className="flex flex-col items-center gap-2">
-        <ClickDisplay count={clicks} cps={cps} />
-        <ClickButton onClick={increment} />
+  return (
+    <>
+      <div className="h-screen bg-slate-800 text-white bg-center bg-cover flex flex-col justify-between items-center text-center py-80">
+        {/* Top */}
+        <h1 className="text-4xl font-bold mb-4">Clicker Page</h1>
+
+        {/* Middle: Display + Button */}
+        <div className="flex flex-col items-center gap-2">
+          <ClickDisplay count={clicks} cps={cps} />
+          <ClickButton onClick={increment} />
+        </div>
+
+        {/* Bottom */}
+        <Link to="/" className="text-blue-400 underline text-lg mb-4">
+          Back to Home
+        </Link>
       </div>
 
-      {/* Bottom */}
-      <Link to="/" className="text-blue-400 underline text-lg mb-4">
-        Back to Home
-      </Link>
-    </div>
+      <button
+        onClick={resetClicks}
+        className="absolute bottom-4 left-4 bg-pink-900 hover:bg-red-600 text-white px-4 py-2 rounded shadow"
+      >
+        Reset Clicks
+      </button>
+    </>
   );
 }
